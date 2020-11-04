@@ -1,4 +1,4 @@
-import { observable, makeObservable, computed, action } from "mobx";
+import { observable, makeObservable, action } from "mobx";
 
 class Store {
   editorOptions = {
@@ -8,13 +8,14 @@ class Store {
     font: "monospace",
     lineNumbers: true,
     value: `function HelloWorld(){
-      console.log("Hello World 🎉");
-    }`,
+  console.log("Hello World 🎉");
+}`,
   };
 
   appState = {
     exportSize: 1,
     loading: false,
+    showMore: false
   };
 
   setEditorOptions(key, val) {
