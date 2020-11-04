@@ -1,22 +1,21 @@
 import React, { useRef, useState } from "react";
+import { observer } from "mobx-react";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { Hero, Footer } from "../components";
 import html2canvas from "html2canvas";
 
-function Home() {
+const Home = observer(function Home({ store }) {
+  const { editorOptions, appState } = store;
   const editorWrapper = useRef();
-  const starterCode = `function HelloWorld(){
-  console.log("Hello World 🎉");
-}`;
-  const [backgroundColor, setBackgroundColor] = useState("#7878ff");
-  const [value, setValue] = useState(starterCode);
-  const [mode, setMode] = useState("javascript");
-  const [theme, setTheme] = useState("material");
-  const [fontFamily, setFontFamily] = useState("monaco");
-  const [lineNumbers, setLineNumbers] = useState(1);
+  const [value, setValue] = useState(editorOptions.value);
+  const backgroundColor = editorOptions.background;
+  const mode = editorOptions.mode;
+  const theme = editorOptions.theme;
+  const lineNumbers = editorOptions.lineNumbers;
+  const fontFamily = editorOptions.font;
+  const exportSize = appState.exportSize;
   const [moreTools, setMoreTools] = useState(false);
-  const [exportSize, setExportSize] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const loading = appState.loading;
   const options = {
     extraKeys: { "Ctrl-Space": "autocomplete" },
     mode: {
@@ -28,13 +27,13 @@ function Home() {
   };
   const captureHandler = () => {
     editorWrapper.current.style.transform = `scale(${exportSize})`;
-    setLoading(true);
+    store.setAppState("loading", true);
     html2canvas(editorWrapper.current, {
       allowTaint: true,
       useCORS: true,
     }).then((canvas) => {
       editorWrapper.current.style.transform = `scale(1)`;
-      setLoading(false);
+      store.setAppState("loading", false);
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.setAttribute("download", "code-screen.png");
@@ -59,7 +58,11 @@ function Home() {
                 <li>
                   <label className="select-box">
                     <span>Mode</span>
-                    <select onChange={(e) => setMode(e.target.value)}>
+                    <select
+                      onChange={(e) =>
+                        store.setEditorOptions("mode", e.target.value)
+                      }
+                    >
                       <option value="javascript">JavaScript</option>
                       <option value="php">php</option>
                       <option value="css">css</option>
@@ -73,7 +76,11 @@ function Home() {
                 <li>
                   <label className="select-box">
                     <span>Theme</span>
-                    <select onChange={(e) => setTheme(e.target.value)}>
+                    <select
+                      onChange={(e) =>
+                        store.setEditorOptions("theme", e.target.value)
+                      }
+                    >
                       <option value="material">Material</option>
                       <option value="ayu-mirage">Ayu Mirage</option>
                       <option value="duotone-light">Duotone Light</option>
@@ -88,7 +95,9 @@ function Home() {
                     <input
                       type="color"
                       value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      onChange={(e) =>
+                        store.setEditorOptions("background", e.target.value)
+                      }
                     />
                   </button>
                 </li>
@@ -104,7 +113,9 @@ function Home() {
                       <ul>
                         <li
                           className="button"
-                          onClick={() => setLineNumbers(!lineNumbers)}
+                          onClick={() =>
+                            store.setEditorOptions("lineNumbers", !lineNumbers)
+                          }
                         >
                           <span>Line No</span>
                           {lineNumbers && (
@@ -117,7 +128,9 @@ function Home() {
                           <span>Font</span>
                           <label>
                             <select
-                              onChange={(e) => setFontFamily(e.target.value)}
+                              onChange={(e) =>
+                                store.setEditorOptions("font", e.target.value)
+                              }
                             >
                               <option value="monospace">monospace</option>
                               <option value="monaco">monaco</option>
@@ -129,8 +142,10 @@ function Home() {
                           <span>Export Size</span>
                           <label>
                             <select
-                              defaultValue={exportSize}
-                              onChange={(e) => setExportSize(e.target.value)}
+                              value={exportSize}
+                              onChange={(e) =>
+                                store.setAppState("exportSize", e.target.value)
+                              }
                             >
                               <option value="1">1x</option>
                               <option value="2">2x</option>
@@ -186,6 +201,6 @@ function Home() {
       `}</style>
     </React.Fragment>
   );
-}
+});
 
 export default Home;

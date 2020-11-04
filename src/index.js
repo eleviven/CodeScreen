@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import store from "./store";
 import Home from "./pages/home";
-import "./assets/scss/style.scss";
 
+import "./assets/scss/style.scss";
 import "codemirror/mode/xml/xml";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/php/php";
@@ -16,7 +17,7 @@ import "codemirror/addon/hint/javascript-hint";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Home />
+    <Home store={store} />
   </React.StrictMode>,
   document.getElementById("root")
 );
