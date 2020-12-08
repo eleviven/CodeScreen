@@ -12,7 +12,7 @@ export default function Footer() {
         </div>
         <ul className="footer-nav">
           <li>
-            <a href="#" target="_blank">
+            <a href="https://github.com/eleviven/CodeScreen" target="_blank">
               Source
             </a>
           </li>
